@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Beachvolley Counter</string>
+    <string name="app_title">Beach Volley Counter</string>
+    <string name="set_1">Set 1</string>
+    <string name="team_a">Team A</string>
+    <string name="team_b">Team B</string>
+    <string name="number_0">0</string>
+    <string name="point">Point</string>
+    <string name="timeout">Time out</string>
+    <string name="reset_button">Reset</string>
+</resources>
