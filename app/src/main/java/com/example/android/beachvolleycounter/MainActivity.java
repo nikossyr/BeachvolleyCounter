@@ -1,11 +1,14 @@
 package com.example.android.beachvolleycounter;
 
+import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.text.DecimalFormat;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -19,12 +22,26 @@ public class MainActivity extends AppCompatActivity {
     TextView setView;
     int timeOutA = 0;
     int timeOutB = 0;
+    int counterTimeOutA = 0;
+    int counterTimeOutB = 0;
+    CountDownTimer timer;
+    Button pointAbtn;
+    Button pointBbtn;
+    Button timeoutAbtn;
+    Button timeoutBbtn;
+    DecimalFormat twoDecimalPrecision = new DecimalFormat(".##");
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setView = (TextView) findViewById(R.id.set_number);
+        pointAbtn = (Button) findViewById(R.id.pointBtnA);
+        pointBbtn = (Button) findViewById(R.id.pointBtnB);
+        timeoutAbtn = (Button) findViewById(R.id.timeoutBtnA);
+        timeoutBbtn = (Button) findViewById(R.id.timeoutBtnB);
+
     }
 
     /**
@@ -32,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public void point_teamA(View view) {
         if (setTeamA == 2 || setTeamB == 2 || setTeamA + setTeamB == 3) {
-            Toast.makeText(this, "The game is over. Please hit RESET to start a new game", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getText(R.string.game_over_toast), Toast.LENGTH_LONG).show();
         } else {
             scoreTeamA = scoreTeamA + 1;
             displayScoreTeamA(scoreTeamA);
@@ -47,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public void point_teamB(View view) {
         if (setTeamA == 2 || setTeamB == 2 || setTeamA + setTeamB == 3) {
-            Toast.makeText(this, "The game is over. Please hit RESET to start a new game", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getText(R.string.game_over_toast), Toast.LENGTH_LONG).show();
         } else {
             scoreTeamB = scoreTeamB + 1;
             displayScoreTeamB(scoreTeamB);
@@ -61,21 +78,54 @@ public class MainActivity extends AppCompatActivity {
      * Activated upon tapping the TIMEOUT button for Team A
      */
     public void timeoutA(View view) {
-        if (setTeamA == 2 || setTeamB == 2 || setTeamA + setTeamB == 3) {
-            Toast.makeText(this, "The game is over. Please hit RESET to start a new game", Toast.LENGTH_LONG).show();
-        } else if (timeOutA == 0) {
-            new CountDownTimer(10000, 1000) {
-                public void onTick(long millisUntilFinished) {
+        counterTimeOutA += 1;
+        timer = new CountDownTimer(10000, 1) {
+            public void onTick(long millisUntilFinished) {
+                if (counterTimeOutA > 1) {
+                    cancel();
+                    setNumbering(setTeamA, setTeamB);
+                    counterTimeOutA = 0;
+                    pointAbtn.setClickable(true);
+                    pointBbtn.setClickable(true);
+                    timeoutBbtn.setClickable(true);
+                    pointAbtn.setBackgroundColor(Color.parseColor("#2196F3"));
+                    pointBbtn.setBackgroundColor(Color.parseColor("#2196F3"));
+                    timeoutAbtn.setText(getString(R.string.timeout));
+                    timeoutBbtn.setBackgroundColor(Color.parseColor("#2196F3"));
+                } else {
                     String timeOutText = ("Time Out\n" + millisUntilFinished / 1000 + " seconds remaining");
                     setView.setText(timeOutText);
                 }
-                public void onFinish() {
-                    setNumbering(setTeamA, setTeamB);
-                    timeOutA += 1;
-                }
-            }.start();
+            }
+
+            public void onFinish() {
+                setNumbering(setTeamA, setTeamB);
+                timeOutA += 2;
+                pointAbtn.setClickable(true);
+                pointBbtn.setClickable(true);
+                timeoutBbtn.setClickable(true);
+                pointAbtn.setBackgroundColor(Color.parseColor("#2196F3"));
+                pointBbtn.setBackgroundColor(Color.parseColor("#2196F3"));
+                timeoutAbtn.setText(getString(R.string.timeout));
+                timeoutBbtn.setBackgroundColor(Color.parseColor("#2196F3"));
+            }
+        };
+
+        if (setTeamA == 2 || setTeamB == 2 || setTeamA + setTeamB == 3) {
+            Toast.makeText(this, getText(R.string.game_over_toast), Toast.LENGTH_LONG).show();
         } else if (timeOutA > 0) {
-            Toast.makeText(this, "No more TimeOuts for Team A for this Set", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getText(R.string.timeout_limit), Toast.LENGTH_LONG).show();
+        } else if (timeOutA == 0 && counterTimeOutA == 1) {
+            pointAbtn.setClickable(false);
+            pointBbtn.setClickable(false);
+            timeoutBbtn.setClickable(false);
+            pointAbtn.setBackgroundColor(Color.parseColor("#BDBDBD"));
+            pointBbtn.setBackgroundColor(Color.parseColor("#BDBDBD"));
+            timeoutAbtn.setText(getString(R.string.cancel));
+            timeoutBbtn.setBackgroundColor(Color.parseColor("#BDBDBD"));
+            timer.start();
+
+
         }
     }
 
@@ -83,21 +133,52 @@ public class MainActivity extends AppCompatActivity {
      * Activated upon tapping the TIMEOUT button for Team A
      */
     public void timeoutB(View view) {
-        if (setTeamA == 2 || setTeamB == 2 || setTeamA + setTeamB == 3) {
-            Toast.makeText(this, "The game is over. Please hit RESET to start a new game", Toast.LENGTH_LONG).show();
-        } else if (timeOutB == 0) {
-            new CountDownTimer(10000, 1000) {
-                public void onTick(long millisUntilFinished) {
+        counterTimeOutB += 1;
+        timer = new CountDownTimer(10000, 1000) {
+            public void onTick(long millisUntilFinished) {
+                if (counterTimeOutB > 1) {
+                    cancel();
+                    setNumbering(setTeamA, setTeamB);
+                    counterTimeOutB = 0;
+                    pointAbtn.setClickable(true);
+                    pointBbtn.setClickable(true);
+                    timeoutAbtn.setClickable(true);
+                    pointAbtn.setBackgroundColor(Color.parseColor("#2196F3"));
+                    pointBbtn.setBackgroundColor(Color.parseColor("#2196F3"));
+                    timeoutAbtn.setBackgroundColor(Color.parseColor("#2196F3"));
+                    timeoutBbtn.setText(getString(R.string.timeout));
+                } else {
                     String timeOutText = ("Time Out\n" + millisUntilFinished / 1000 + " seconds remaining");
                     setView.setText(timeOutText);
                 }
-                public void onFinish() {
-                    setNumbering(setTeamA, setTeamB);
-                    timeOutB += 1;
-                }
-            }.start();
+            }
+
+            public void onFinish() {
+                setNumbering(setTeamA, setTeamB);
+                timeOutB += 2;
+                pointAbtn.setClickable(true);
+                pointBbtn.setClickable(true);
+                timeoutAbtn.setClickable(true);
+                pointAbtn.setBackgroundColor(Color.parseColor("#2196F3"));
+                pointBbtn.setBackgroundColor(Color.parseColor("#2196F3"));
+                timeoutAbtn.setBackgroundColor(Color.parseColor("#2196F3"));
+                timeoutBbtn.setText(getString(R.string.timeout));
+            }
+        };
+
+        if (setTeamA == 2 || setTeamB == 2 || setTeamA + setTeamB == 3) {
+            Toast.makeText(this, getText(R.string.game_over_toast), Toast.LENGTH_LONG).show();
         } else if (timeOutB > 0) {
-            Toast.makeText(this, "No more TimeOuts for Team A for this Set", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getText(R.string.timeout_limit), Toast.LENGTH_LONG).show();
+        } else if (timeOutB == 0 && counterTimeOutB == 1) {
+            pointAbtn.setClickable(false);
+            pointBbtn.setClickable(false);
+            timeoutAbtn.setClickable(false);
+            pointAbtn.setBackgroundColor(Color.parseColor("#BDBDBD"));
+            pointBbtn.setBackgroundColor(Color.parseColor("#BDBDBD"));
+            timeoutAbtn.setBackgroundColor(Color.parseColor("#BDBDBD"));
+            timeoutBbtn.setText(getString(R.string.cancel));
+            timer.start();
         }
     }
 
@@ -105,20 +186,32 @@ public class MainActivity extends AppCompatActivity {
      * Activated upon tapping the RESET button
      */
     public void resetScore(View view) {
+        timer.cancel();
         scoreTeamB = 0;
         scoreTeamA = 0;
         setTeamA = 0;
         setTeamB = 0;
         timeOutA = 0;
         timeOutB = 0;
-        setNumbering(setTeamA,setTeamB);
+        counterTimeOutA = 0;
+        counterTimeOutB = 0;
+        pointAbtn.setClickable(true);
+        pointBbtn.setClickable(true);
+        timeoutAbtn.setClickable(true);
+        timeoutBbtn.setClickable(true);
+        pointAbtn.setBackgroundColor(Color.parseColor("#2196F3"));
+        pointBbtn.setBackgroundColor(Color.parseColor("#2196F3"));
+        timeoutAbtn.setBackgroundColor(Color.parseColor("#2196F3"));
+        timeoutBbtn.setBackgroundColor(Color.parseColor("#2196F3"));
+        timeoutAbtn.setText(getString(R.string.timeout));
+        timeoutBbtn.setText(getString(R.string.timeout));
+        setNumbering(setTeamA, setTeamB);
         displayScoreTeamA(scoreTeamA);
         displayScoreTeamB(scoreTeamB);
         displaySetTeamA(setTeamA);
         displaySetTeamB(setTeamB);
-        displayHistoryTeamA(10,10);
-        displayHistoryTeamB(10,10);
-
+        displayHistoryTeamA(10, 10);
+        displayHistoryTeamB(10, 10);
     }
 
     /**
@@ -155,9 +248,8 @@ public class MainActivity extends AppCompatActivity {
             } else if (scoreA == setWinningScore - 1 && scoreB == setWinningScore - 1) {
                 setWinningScore += 1;
             }
-        }
-        else if (setTeamA == 1 && setTeamB == 1) {
-            if (scoreA == decisiveSetWinningScore && scoreB <decisiveSetWinningScore - 1) {
+        } else if (setTeamA == 1 && setTeamB == 1) {
+            if (scoreA == decisiveSetWinningScore && scoreB < decisiveSetWinningScore - 1) {
                 setTeamA += 1;
                 timeOutA = 0;
                 timeOutB = 0;
@@ -190,17 +282,24 @@ public class MainActivity extends AppCompatActivity {
      **/
     public void setNumbering(int setA, int setB) {
 
-        if (setA+setB == 0) {
-            setView.setText(String.valueOf("Set 1"));
-        }
-        else if (setA+setB == 1) {
-            setView.setText(String.valueOf("Set 2"));
-        }
-        else if (setA == 1 && setB == 1) {
-            setView.setText(String.valueOf("Decisive Set 3"));
-        }
-        else if (setA+setB>=2){
-            setView.setText(String.valueOf("Game Over"));
+        if (setA + setB == 0) {
+            setView.setText(String.valueOf(getString(R.string.set_1)));
+            counterTimeOutA = 0;
+            counterTimeOutB = 0;
+        } else if (setA + setB == 1) {
+            setView.setText(String.valueOf(getString(R.string.set_2)));
+            counterTimeOutA = 0;
+            counterTimeOutB = 0;
+        } else if (setA == 1 && setB == 1) {
+            setView.setText(String.valueOf(getString(R.string.set_3)));
+            counterTimeOutA = 0;
+            counterTimeOutB = 0;
+        } else if (setA + setB >= 2) {
+            setView.setText(String.valueOf(getText(R.string.game_over)));
+            pointAbtn.setBackgroundColor(Color.parseColor("#BDBDBD"));
+            pointBbtn.setBackgroundColor(Color.parseColor("#BDBDBD"));
+            timeoutAbtn.setBackgroundColor(Color.parseColor("#BDBDBD"));
+            timeoutBbtn.setBackgroundColor(Color.parseColor("#BDBDBD"));
         }
     }
 
@@ -236,10 +335,11 @@ public class MainActivity extends AppCompatActivity {
         TextView scoreView = (TextView) findViewById(R.id.team_b_sets);
         scoreView.setText(String.valueOf(score));
     }
+
     /**
      * Displays the SCORES that Team A won in the corresponding SETS
      */
-    public void displayHistoryTeamA(int scoreA, int scoreB){
+    public void displayHistoryTeamA(int scoreA, int scoreB) {
         TextView set1View = (TextView) findViewById(R.id.set1TeamA);
         TextView set2View = (TextView) findViewById(R.id.set2TeamA);
         TextView set3View = (TextView) findViewById(R.id.set3TeamA);
@@ -247,24 +347,18 @@ public class MainActivity extends AppCompatActivity {
         if (setTeamA == 1 && setTeamB == 0) {
             String scoreString = String.valueOf(scoreA) + "/" + String.valueOf(scoreB);
             set1View.setText(scoreString);
-        }
-        else if(setTeamA == 1 && setTeamB == 1){
+        } else if (setTeamA == 1 && setTeamB == 1) {
             String scoreString = String.valueOf(scoreA) + "/" + String.valueOf(scoreB);
             set2View.setText(scoreString);
-        }
-        else if(setTeamA == 2 && setTeamB == 0){
+        } else if (setTeamA == 2 && setTeamB == 0) {
             String scoreString = String.valueOf(scoreA) + "/" + String.valueOf(scoreB);
             set2View.setText(scoreString);
-            String teamAwins = "Team A wins!!";
-            winningView.setText(teamAwins);
-        }
-        else if(setTeamA == 2 && setTeamB == 1){
+            winningView.setText(getText(R.string.win_team_a));
+        } else if (setTeamA == 2 && setTeamB == 1) {
             String scoreString = String.valueOf(scoreA) + "/" + String.valueOf(scoreB);
             set3View.setText(scoreString);
-            String teamAwins = "Team A wins!!";
-            winningView.setText(teamAwins);
-        }
-        else if(scoreA == 10 && scoreB == 10){
+            winningView.setText(getText(R.string.win_team_a));
+        } else if (scoreA == 10 && scoreB == 10) {
             String clearTextView = "";
             set1View.setText(clearTextView);
             set2View.setText(clearTextView);
@@ -272,10 +366,11 @@ public class MainActivity extends AppCompatActivity {
             winningView.setText(clearTextView);
         }
     }
+
     /**
      * Displays the SCORES that Team B won in the corresponding SETS
      */
-    public void displayHistoryTeamB(int scoreA, int scoreB){
+    public void displayHistoryTeamB(int scoreA, int scoreB) {
         TextView set1View = (TextView) findViewById(R.id.set1TeamB);
         TextView set2View = (TextView) findViewById(R.id.set2TeamB);
         TextView set3View = (TextView) findViewById(R.id.set3TeamB);
@@ -283,24 +378,18 @@ public class MainActivity extends AppCompatActivity {
         if (setTeamB == 1 && setTeamA == 0) {
             String scoreString = String.valueOf(scoreA) + "/" + String.valueOf(scoreB);
             set1View.setText(scoreString);
-        }
-        else if (setTeamB == 1 && setTeamA == 1) {
+        } else if (setTeamB == 1 && setTeamA == 1) {
             String scoreString = String.valueOf(scoreA) + "/" + String.valueOf(scoreB);
             set2View.setText(scoreString);
-        }
-        else if(setTeamB == 2 && setTeamA == 0){
+        } else if (setTeamB == 2 && setTeamA == 0) {
             String scoreString = String.valueOf(scoreA) + "/" + String.valueOf(scoreB);
             set2View.setText(scoreString);
-            String teamBwins = "Team B wins!!";
-            winningView.setText(teamBwins);
-        }
-        else if(setTeamB == 2 && setTeamA == 1){
+            winningView.setText(getText(R.string.win_team_b));
+        } else if (setTeamB == 2 && setTeamA == 1) {
             String scoreString = String.valueOf(scoreA) + "/" + String.valueOf(scoreB);
             set3View.setText(scoreString);
-            String teamBwins = "Team B wins!!";
-            winningView.setText(teamBwins);
-        }
-        else if(scoreA == 10 && scoreB == 10){
+            winningView.setText(getText(R.string.win_team_b));
+        } else if (scoreA == 10 && scoreB == 10) {
             String clearTextView = "";
             set1View.setText(clearTextView);
             set2View.setText(clearTextView);

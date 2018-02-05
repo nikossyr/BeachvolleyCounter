@@ -53,7 +53,7 @@
         android:id="@+id/scoreBoard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8sp"
+        android:layout_marginTop="8dp"
         android:layout_centerVertical="true"
         tools:context="com.example.android.beachvolleycounter.MainActivity">
 
@@ -104,6 +104,7 @@
             </LinearLayout>
 
             <Button
+                android:id="@+id/pointBtnA"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -112,6 +113,7 @@
                 android:textAllCaps="true" />
 
             <Button
+                android:id="@+id/timeoutBtnA"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -201,6 +203,7 @@
             </LinearLayout>
 
             <Button
+                android:id="@+id/pointBtnB"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -209,6 +212,7 @@
                 android:textAllCaps="true" />
 
             <Button
+                android:id="@+id/timeoutBtnB"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"

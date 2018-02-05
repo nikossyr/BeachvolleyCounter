@@ -1,11 +1,20 @@
 <resources>
     <string name="app_name">Beachvolley Counter</string>
     <string name="app_title">Beach Volley Counter</string>
-    <string name="set_1">Set 1</string>
+    <string name="set_1">Set 1\n </string>
+    <string name="set_2">Set 2\n </string>
+    <string name="set_3">Decisive Set 3\n </string>
     <string name="team_a">Team A</string>
     <string name="team_b">Team B</string>
     <string name="number_0">0</string>
     <string name="point">Point</string>
     <string name="timeout">Time out</string>
+    <string name="cancel">Cancel</string>
     <string name="reset_button">Reset</string>
+    <string name="game_over">Game Over\n </string>
+    <string name="game_over_toast">Please hit RESET for new game.</string>
+    <string name="timeout_limit">Time Out limit for this Set exceeded</string>
+    <string name="win_team_a">Team A Wins!!</string>
+    <string name="win_team_b">Team B Wins!!</string>
+
 </resources>
